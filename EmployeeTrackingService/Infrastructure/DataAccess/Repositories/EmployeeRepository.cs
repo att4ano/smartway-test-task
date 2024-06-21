@@ -18,8 +18,10 @@ public class EmployeeRepository : IEmployeeRepository
     public async Task<IEnumerable<Employee>> GetAll()
     {
         await using var connection = await _dataSource.OpenConnectionAsync();
-        const string query = @"SELECT *
-                               FROM employee";
+        const string query = """
+                             SELECT *
+                             FROM employee
+                             """;
         var response = await connection.QueryAsync<Employee>(query);
         return response;
     }
@@ -27,9 +29,11 @@ public class EmployeeRepository : IEmployeeRepository
     public async Task<IEnumerable<Employee>> GetAllByCompanyId(long id)
     {
         await using var connection = await _dataSource.OpenConnectionAsync();
-        const string query = @"SELECT *
-                               FROM employee
-                               WHERE company_id = @Id";
+        const string query = """
+                             SELECT *
+                             FROM employee as e 
+                             WHERE e.company_id = @Id
+                             """;
         var response = await connection.QueryAsync<Employee>(
             query,
             new
@@ -42,9 +46,11 @@ public class EmployeeRepository : IEmployeeRepository
     public async Task<IEnumerable<Employee>> GetAllByDepartmentId(long id)
     {
         await using var connection = await _dataSource.OpenConnectionAsync();
-        const string query = @"SELECT *
-                               FROM employee
-                               WHERE department_id = @Id";
+        const string query = """
+                             SELECT *
+                             FROM employee as e
+                             WHERE e.department_id = @Id
+                             """;
         var response = await connection.QueryAsync<Employee>(
             query,
             new
@@ -86,7 +92,7 @@ public class EmployeeRepository : IEmployeeRepository
 
     public async Task Update(long id, Dictionary<string, object> fieldsToUpdate)
     {
-        if (fieldsToUpdate == null || fieldsToUpdate.Count == 0)
+        if (fieldsToUpdate.Count == 0)
             throw new ArgumentException("No fields to update provided.", nameof(fieldsToUpdate));
 
         var updateClause = new StringBuilder();
@@ -96,7 +102,7 @@ public class EmployeeRepository : IEmployeeRepository
         {
             if (updateClause.Length > 0)
                 updateClause.Append(", ");
-        
+
             updateClause.Append($"{field.Key} = @{field.Key}");
             parameters.Add($"@{field.Key}", field.Value);
         }

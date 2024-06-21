@@ -11,7 +11,7 @@ public class InitialDepartmentTableMigration : Migration
                                 CREATE TABLE IF NOT EXISTS department (
                                     id SERIAL PRIMARY KEY,
                                     name VARCHAR(255) NOT NULL,
-                                    phone_number VARCHAR(20),
+                                    phone_number VARCHAR(30),
                                     company_id INTEGER NOT NULL,
                                     FOREIGN KEY (company_id) REFERENCES company (id));
                              ";
