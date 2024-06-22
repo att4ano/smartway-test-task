@@ -11,10 +11,13 @@ namespace Application.Services;
 public class EmployeeService : IEmployeeService
 {
     private readonly IEmployeeRepository _employeeRepository;
+    private readonly IPassportRepository _passportRepository;
 
-    public EmployeeService(IEmployeeRepository employeeRepository)
+    public EmployeeService(IEmployeeRepository employeeRepository, 
+        IPassportRepository passportRepository)
     {
         _employeeRepository = employeeRepository;
+        _passportRepository = passportRepository;
     }
 
     private static TransactionScope CreateTransactionScope(
@@ -56,6 +59,16 @@ public class EmployeeService : IEmployeeService
 
     public async Task<EmployeeIdDtoResponse> Add(AddEmployeeDtoRequest request)
     {
+        using var transaction = CreateTransactionScope();
+
+        var passport = new Passport
+        {
+            Type = request.PassportType,
+            Number = request.PassportNumber,
+        };
+
+        var passportIdResponse = await _passportRepository.Add(new[] { passport });
+        
         var employee = new Employee
         {
             Name = request.Name,
@@ -63,9 +76,9 @@ public class EmployeeService : IEmployeeService
             Phone = request.Phone,
             CompanyId = request.CompanyId,
             DepartmentId = request.DepartmentId,
-            PassportId = request.PassportId
+            PassportId = passportIdResponse.Single()
         };
-        using var transaction = CreateTransactionScope();
+        
         var response = await _employeeRepository.Add(new[] { employee });
         transaction.Complete();
         return new EmployeeIdDtoResponse(response.Single());
@@ -80,25 +93,25 @@ public class EmployeeService : IEmployeeService
 
     public async Task Update(UpdateEmployeeDtoRequest request)
     {
-        var fieldsToUpdate = new Dictionary<string, object>();
+        var employeeFieldsToUpdate = new Dictionary<string, object>();
 
         if (!string.IsNullOrEmpty(request.Name))
-            fieldsToUpdate.Add("name", request.Name);
+            employeeFieldsToUpdate.Add("name", request.Name);
 
         if (!string.IsNullOrEmpty(request.Surname))
-            fieldsToUpdate.Add("surname", request.Surname);
+            employeeFieldsToUpdate.Add("surname", request.Surname);
 
         if (!string.IsNullOrEmpty(request.Phone))
-            fieldsToUpdate.Add("phone", request.Phone);
+            employeeFieldsToUpdate.Add("phone", request.Phone);
 
         if (request.CompanyId != null)
-            fieldsToUpdate.Add("company_id", request.CompanyId);
+            employeeFieldsToUpdate.Add("company_id", request.CompanyId);
 
         if (request.DepartmentId != null)
-            fieldsToUpdate.Add("department_id", request.DepartmentId);
+            employeeFieldsToUpdate.Add("department_id", request.DepartmentId);
         
         using var transaction = CreateTransactionScope();
-        await _employeeRepository.Update(request.Id, fieldsToUpdate);
+        await _employeeRepository.Update(request.Id, employeeFieldsToUpdate);
         transaction.Complete();
     }
 }

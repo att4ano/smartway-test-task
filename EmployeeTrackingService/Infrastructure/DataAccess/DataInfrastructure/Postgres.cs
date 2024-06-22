@@ -22,6 +22,7 @@ public static class Postgres
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
         
         builder.MapComposite<Employee>("employee_type", Translator);
+        builder.MapComposite<Passport>("passport_type", Translator);
     }
     
     public static void AddMigrations(this IServiceCollection collection, string connectionString)

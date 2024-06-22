@@ -83,10 +83,8 @@ public class EmployeeRepository : IEmployeeRepository
         const string sqlQuery = @"DELETE FROM employee WHERE id = @Id";
         await using var connection = await _dataSource.OpenConnectionAsync();
         await connection.ExecuteAsync(
-            new CommandDefinition(
                 sqlQuery,
                 new { Id = id }
-            )
         );
     }
 

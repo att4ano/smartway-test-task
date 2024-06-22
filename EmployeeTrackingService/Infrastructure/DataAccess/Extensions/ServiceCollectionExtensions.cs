@@ -13,6 +13,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddDataAccess(this IServiceCollection collection)
     {
         collection.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        collection.AddScoped<IPassportRepository, PassportRepository>();
         return collection;
     }
 

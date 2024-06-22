@@ -6,4 +6,5 @@ public record AddEmployeeDtoRequest(
     string Phone,
     long CompanyId,
     long DepartmentId,
-    long PassportId);
+    string PassportType,
+    string PassportNumber);
