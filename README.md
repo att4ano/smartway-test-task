@@ -19,7 +19,7 @@ docker-compose build && docker-compose up
 которые указаны в запросе.
 
 **Модель сотрудника:**
-
+```
 {
   Id int
   Name string
@@ -35,7 +35,7 @@ docker-compose build && docker-compose up
     Phone string
   }
 }
-
+```
 Все методы должны быть реализованы в виде HTTP запросов в формате JSON.
 БД: любая.
 ORM: Dapper
