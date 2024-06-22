@@ -42,3 +42,10 @@ docker-compose build && docker-compose up
 БД: любая.
 
 ORM: Dapper
+
+### Схема базы данных сервиса
+
+![image](https://github.com/att4ano/smartway-test-task/assets/113085241/4f7e1c03-c341-4b21-8476-7e679933dd78)
+
+
+
